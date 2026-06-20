@@ -17,13 +17,28 @@ import TrainingManage from './pages/TrainingManage';
 import ExternalApiTest from './pages/ExternalApiTest';
 import Settings from './pages/Settings';
 
+// 学生端页面
+import StudentDashboard from './pages/StudentDashboard';
+import StudentCertificates from './pages/StudentCertificates';
+import StudentApply from './pages/StudentApply';
+import StudentTraining from './pages/StudentTraining';
+
 // 布局组件
 import MainLayout from './components/MainLayout';
+import StudentLayout from './components/StudentLayout';
 
 // 路由守卫 - 检查登录状态
 const PrivateRoute = ({ children }) => {
     const token = localStorage.getItem('token');
-    return token ? children : <Navigate to="/login" replace />;
+    const user = localStorage.getItem('user');
+    
+    if (!token || !user) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        return <Navigate to="/login" replace />;
+    }
+    
+    return children;
 };
 
 function App() {
@@ -68,8 +83,23 @@ function App() {
                         <Route path="settings" element={<Settings />} />
                     </Route>
 
+                    {/* 学生端路由 */}
+                    <Route
+                        path="/student"
+                        element={
+                            <PrivateRoute>
+                                <StudentLayout />
+                            </PrivateRoute>
+                        }
+                    >
+                        <Route index element={<StudentDashboard />} />
+                        <Route path="certificates" element={<StudentCertificates />} />
+                        <Route path="apply" element={<StudentApply />} />
+                        <Route path="training" element={<StudentTraining />} />
+                    </Route>
+
                     {/* 默认重定向 */}
-                    <Route path="*" element={<Navigate to="/" replace />} />
+                    <Route path="*" element={<Navigate to="/login" replace />} />
                 </Routes>
             </BrowserRouter>
         </ConfigProvider>

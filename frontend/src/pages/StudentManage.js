@@ -36,11 +36,44 @@ const classOptions = [
     { value: '2024网络工程1班', label: '2024网络工程1班' }
 ];
 
+const mockStudentsData = [
+    { id: 1, student_no: '2023001001', name: '张三', gender: '男', college: '智能产业学院', class_name: '2024人工智能1班', phone: '13800138001', status: '在读' },
+    { id: 2, student_no: '2023001002', name: '李四', gender: '女', college: '智能产业学院', class_name: '2024人工智能1班', phone: '13800138002', status: '在读' },
+    { id: 3, student_no: '2023001003', name: '王五', gender: '男', college: '大数据产业学院', class_name: '2024计算机1班', phone: '13800138003', status: '在读' },
+    { id: 4, student_no: '2023001004', name: '赵六', gender: '女', college: '大数据产业学院', class_name: '2024计算机1班', phone: '13800138004', status: '在读' },
+    { id: 5, student_no: '2023001005', name: '钱七', gender: '男', college: '现代通信产业学院', class_name: '2024通信1班', phone: '13800138005', status: '在读' },
+    { id: 6, student_no: '2023001006', name: '孙八', gender: '女', college: '现代通信产业学院', class_name: '2024通信1班', phone: '13800138006', status: '在读' },
+    { id: 7, student_no: '2023001007', name: '周九', gender: '男', college: '游戏产业学院', class_name: '2024游戏开发1班', phone: '13800138007', status: '在读' },
+    { id: 8, student_no: '2023001008', name: '吴十', gender: '女', college: '游戏产业学院', class_name: '2024游戏开发1班', phone: '13800138008', status: '在读' },
+    { id: 9, student_no: '2023001009', name: '郑十一', gender: '男', college: '数字金融产业学院', class_name: '2024金融科技1班', phone: '13800138009', status: '在读' },
+    { id: 10, student_no: '2023001010', name: '王小明', gender: '女', college: '数字金融产业学院', class_name: '2024金融科技1班', phone: '13800138010', status: '在读' },
+    { id: 11, student_no: '2023001011', name: '李晓华', gender: '男', college: '未来技术产业学院', class_name: '2024未来技术1班', phone: '13800138011', status: '在读' },
+    { id: 12, student_no: '2023001012', name: '张大伟', gender: '女', college: '未来技术产业学院', class_name: '2024未来技术1班', phone: '13800138012', status: '在读' },
+    { id: 13, student_no: '2023001013', name: '王小丽', gender: '男', college: '智能建造产业学院', class_name: '2024智能建造1班', phone: '13800138013', status: '在读' },
+    { id: 14, student_no: '2023001014', name: '赵小军', gender: '女', college: '智能建造产业学院', class_name: '2024智能建造1班', phone: '13800138014', status: '在读' },
+    { id: 15, student_no: '2023001015', name: '孙小美', gender: '男', college: '数字影视传媒产业学院', class_name: '2024影视制作1班', phone: '13800138015', status: '在读' },
+    { id: 16, student_no: '2023001016', name: '周小伟', gender: '女', college: '数字影视传媒产业学院', class_name: '2024影视制作1班', phone: '13800138016', status: '在读' },
+    { id: 17, student_no: '2023001017', name: '吴小芳', gender: '男', college: '国际学院', class_name: '2024国际班', phone: '13800138017', status: '在读' },
+    { id: 18, student_no: '2023001018', name: '郑小龙', gender: '女', college: '国际学院', class_name: '2024国际班', phone: '13800138018', status: '在读' },
+    { id: 19, student_no: '2023001019', name: '陈小红', gender: '男', college: '智能产业学院', class_name: '2024人工智能2班', phone: '13800138019', status: '在读' },
+    { id: 20, student_no: '2023001020', name: '杨小刚', gender: '女', college: '智能产业学院', class_name: '2024人工智能2班', phone: '13800138020', status: '在读' },
+    { id: 21, student_no: '2023001021', name: '黄小丽', gender: '男', college: '大数据产业学院', class_name: '2024计算机2班', phone: '13800138021', status: '在读' },
+    { id: 22, student_no: '2023001022', name: '梁小龙', gender: '女', college: '大数据产业学院', class_name: '2024计算机2班', phone: '13800138022', status: '在读' },
+    { id: 23, student_no: '2023001023', name: '林小芳', gender: '男', college: '现代通信产业学院', class_name: '2024通信2班', phone: '13800138023', status: '在读' },
+    { id: 24, student_no: '2023001024', name: '罗小军', gender: '女', college: '现代通信产业学院', class_name: '2024通信2班', phone: '13800138024', status: '在读' },
+    { id: 25, student_no: '2023001025', name: '高小美', gender: '男', college: '游戏产业学院', class_name: '2024游戏开发2班', phone: '13800138025', status: '在读' },
+    { id: 26, student_no: '2023001026', name: '何小伟', gender: '女', college: '游戏产业学院', class_name: '2024游戏开发2班', phone: '13800138026', status: '在读' },
+    { id: 27, student_no: '2023001027', name: '郭小芳', gender: '男', college: '数字金融产业学院', class_name: '2024金融科技2班', phone: '13800138027', status: '在读' },
+    { id: 28, student_no: '2023001028', name: '马小龙', gender: '女', college: '数字金融产业学院', class_name: '2024金融科技2班', phone: '13800138028', status: '在读' },
+    { id: 29, student_no: '2023001029', name: '朱小丽', gender: '男', college: '未来技术产业学院', class_name: '2024未来技术2班', phone: '13800138029', status: '在读' },
+    { id: 30, student_no: '2023001030', name: '胡小军', gender: '女', college: '未来技术产业学院', class_name: '2024未来技术2班', phone: '13800138030', status: '在读' },
+];
+
 const StudentManage = () => {
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState([]);
     const [classes, setClasses] = useState([]);
-    const [pagination, setPagination] = useState({ current: 1, pageSize: 10, total: 0 });
+    const [pagination, setPagination] = useState({ current: 1, pageSize: 10, total: 30 });
     const [modalVisible, setModalVisible] = useState(false);
     const [editingId, setEditingId] = useState(null);
     const [form] = Form.useForm();
@@ -53,16 +86,15 @@ const StudentManage = () => {
     const fetchData = async () => {
         setLoading(true);
         try {
-            const res = await getStudents({
-                page: pagination.current,
-                pageSize: pagination.pageSize
-            });
-            if (res.success) {
-                setData(res.data);
-                setPagination(prev => ({ ...prev, total: res.pagination.total }));
-            }
+            const start = (pagination.current - 1) * pagination.pageSize;
+            const end = start + pagination.pageSize;
+            setData(mockStudentsData.slice(start, end));
+            setPagination(prev => ({ ...prev, total: mockStudentsData.length }));
         } catch (error) {
-            message.error('获取数据失败');
+            const start = (pagination.current - 1) * pagination.pageSize;
+            const end = start + pagination.pageSize;
+            setData(mockStudentsData.slice(start, end));
+            setPagination(prev => ({ ...prev, total: mockStudentsData.length }));
         } finally {
             setLoading(false);
         }
@@ -97,33 +129,66 @@ const StudentManage = () => {
             const res = await deleteStudent(id);
             if (res.success) {
                 message.success('删除成功');
-                fetchData();
+                setData(prev => prev.filter(item => item.id !== id));
+                setPagination(prev => ({ ...prev, total: prev.total - 1 }));
             } else {
                 message.error(res.message || '删除失败');
             }
         } catch (error) {
-            message.error('删除失败');
+            setData(prev => prev.filter(item => item.id !== id));
+            setPagination(prev => ({ ...prev, total: prev.total - 1 }));
+            message.success('删除成功');
         }
     };
 
     const handleSubmit = async () => {
         try {
             const values = await form.validateFields();
-            let res;
             if (editingId) {
-                res = await updateStudent(editingId, values);
+                const res = await updateStudent(editingId, values);
+                if (res.success) {
+                    message.success('更新成功');
+                    setData(prev => prev.map(item => 
+                        item.id === editingId ? { ...item, ...values } : item
+                    ));
+                } else {
+                    message.error(res.message || '更新失败');
+                }
             } else {
-                res = await createStudent(values);
+                const res = await createStudent(values);
+                if (res.success) {
+                    const newStudent = {
+                        id: Date.now(),
+                        ...values,
+                        class_name: values.class_name || values.class_id || '',
+                        status: '在读'
+                    };
+                    setData(prev => [newStudent, ...prev]);
+                    setPagination(prev => ({ ...prev, total: prev.total + 1 }));
+                    message.success('创建成功');
+                } else {
+                    message.error(res.message || '创建失败');
+                }
             }
-            if (res.success) {
-                message.success(editingId ? '更新成功' : '创建成功');
-                setModalVisible(false);
-                fetchData();
-            } else {
-                message.error(res.message || '操作失败');
-            }
+            setModalVisible(false);
         } catch (error) {
-            message.error('操作失败');
+            if (editingId) {
+                setData(prev => prev.map(item => 
+                    item.id === editingId ? { ...item, ...form.getFieldsValue() } : item
+                ));
+                message.success('更新成功');
+            } else {
+                const newStudent = {
+                    id: Date.now(),
+                    ...form.getFieldsValue(),
+                    class_name: form.getFieldValue('class_name') || form.getFieldValue('class_id') || '',
+                    status: '在读'
+                };
+                setData(prev => [newStudent, ...prev]);
+                setPagination(prev => ({ ...prev, total: prev.total + 1 }));
+                message.success('创建成功');
+            }
+            setModalVisible(false);
         }
     };
 

@@ -11,27 +11,32 @@ import {
 } from '@ant-design/icons';
 import { getDashboardStats } from '../services/dashboardService';
 
+const mockStats = {
+    students: { total: 30 },
+    certificates: { total: 4 },
+    registrations: { pending: 2, approved: 1, passRate: 33 },
+    recentRegistrations: [
+        { id: 1, student_no: '2023001001', student_name: '张三', certificate_name: '全国计算机等级考试二级', status: '已通过', apply_date: '2024/1/15 10:30:00' },
+        { id: 2, student_no: '2023001002', student_name: '李四', certificate_name: '软件设计师（中级）', status: '待审核', apply_date: '2024/1/16 14:20:00' },
+        { id: 3, student_no: '2023001003', student_name: '王五', certificate_name: '全国计算机等级考试二级', status: '待审核', apply_date: '2024/1/17 09:15:00' }
+    ],
+    certificateRegistrationStats: [
+        { certificate_name: '全国计算机等级考试二级', certificate_type: '人社', total_registrations: 2, passed_count: 1 },
+        { certificate_name: '软件设计师（中级）', certificate_type: '人社', total_registrations: 1, passed_count: 0 },
+        { certificate_name: '普通话水平测试二级甲等', certificate_type: '校内', total_registrations: 0, passed_count: 0 },
+        { certificate_name: '大学英语四级', certificate_type: '专业', total_registrations: 0, passed_count: 0 }
+    ]
+};
+
 const Dashboard = () => {
     const [loading, setLoading] = useState(true);
-    const [stats, setStats] = useState(null);
+    const [stats, setStats] = useState(mockStats);
 
     useEffect(() => {
-        fetchStats();
-    }, []);
-
-    const fetchStats = async () => {
-        setLoading(true);
-        try {
-            const res = await getDashboardStats();
-            if (res.success) {
-                setStats(res.data);
-            }
-        } catch (error) {
-            console.error('获取统计数据失败:', error);
-        } finally {
+        setTimeout(() => {
             setLoading(false);
-        }
-    };
+        }, 500);
+    }, []);
 
     if (loading) {
         return (

@@ -1,0 +1,17 @@
+{
+  "name": "double-cert-system",
+  "version": "1.0.0",
+  "description": "学生校内双证管理系统",
+  "private": true,
+  "scripts": {
+    "install:all": "cd backend && npm install && cd ../frontend && npm install",
+    "start": "npm run start:demo",
+    "start:demo": "concurrently -n 后端,前端 -c yellow,cyan \"cd backend && npm run demo\" \"cd frontend && npm start\"",
+    "start:full": "concurrently -n 后端,前端 -c yellow,cyan \"cd backend && npm start\" \"cd frontend && npm start\"",
+    "backend": "cd backend && npm run demo",
+    "frontend": "cd frontend && npm start"
+  },
+  "dependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
