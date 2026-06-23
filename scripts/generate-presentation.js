@@ -1,4 +1,7 @@
-<!DOCTYPE html>
+const fs = require('fs');
+const path = require('path');
+
+const content = `<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -425,4 +428,8 @@
         });
     </script>
 </body>
-</html>
+</html>`;
+
+const outputPath = path.join(__dirname, '../docs/presentation.html');
+fs.writeFileSync(outputPath, content, { encoding: 'utf-8' });
+console.log('Presentation HTML generated successfully:', outputPath);
