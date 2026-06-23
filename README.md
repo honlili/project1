@@ -42,7 +42,7 @@ npm start
 ### 登录账号
 
 - **管理员端**：`admin` / `admin123`
-- **学生端**：使用学生端入口登录（见下）
+- **学生端**：使用学号和密码登录（演示账号：`2023001001` / `123456`）
 
 ---
 
@@ -66,11 +66,13 @@ npm start
 ### 学生端
 登录页顶部有 **"管理员登录 / 学生登录"** 切换，选择"学生登录"后：
 
-- 用学号登录（演示账号：`2023001001` / `123456`）
-- 📋 个人中心 — 查看个人信息
-- 🎓 我的证书 — 查看已获取证书
-- 📝 报名考试 — 报名新的证书考试
-- 📚 培训资料 — 查看学校发布的培训信息
+- 用学号和密码登录（演示账号：`2023001001` / `123456`）
+- 📋 个人中心 — 查看个人信息和统计数据（点击卡片跳转）
+- 🎓 我的证书 — 查看已获取/待审核/已驳回证书
+- 📝 报名考试 — 报名新的证书考试，查看历史记录
+- 📚 培训资料 — 查看学校发布的培训信息，支持下载
+- 🤖 AI智能问答 — 智能解答报名流程、证书要求等问题
+- ⚙️ 个人设置 — 修改联系电话和密码
 
 ---
 
@@ -107,7 +109,9 @@ double-cert-system/
 │       │   ├── StudentDashboard.js   # 学生端首页
 │       │   ├── StudentCertificates.js # 学生端-我的证书
 │       │   ├── StudentApply.js       # 学生端-报名考试
-│       │   └── StudentTraining.js    # 学生端-培训资料
+│       │   ├── StudentTraining.js    # 学生端-培训资料
+│       │   ├── StudentAiChat.js      # 学生端-AI智能问答
+│       │   └── StudentSettings.js    # 学生端-个人设置
 │       ├── services/            # API 服务封装
 │       ├── App.js               # 路由配置（管理员 + 学生）
 │       ├── index.js
@@ -138,7 +142,7 @@ double-cert-system/
 | 培训资料 | 发布培训信息和大纲 |
 | 外部接口 | API Key 认证，供外部系统调用学生证书数据 |
 | 仪表板 | 实时统计待审核数量、通过率等数据 |
-| 学生端 | 独立学生入口，查看证书、报名、培训资料 |
+| 学生端 | 独立学生入口，查看证书、报名、培训资料、AI智能问答、个人设置 |
 
 ---
 
@@ -220,6 +224,18 @@ npm start
 ### 外部接口（API Key 认证）
 - `GET /api/external/student-certificates?student_id=xxx` — 获取学生证书信息
   - 认证方式：请求头 `x-api-key: 123456`
+
+### 学生端接口
+- `POST /api/auth/student-login` — 学生登录
+- `GET /api/student/dashboard` — 获取学生仪表盘数据
+- `GET /api/student/certificates` — 获取学生证书列表
+- `GET /api/student/available-certificates` — 获取可报名证书列表
+- `GET /api/student/registrations` — 获取学生报名记录
+- `POST /api/student/registrations` — 创建报名
+- `GET /api/student/training` — 获取培训资料列表
+- `PUT /api/student/profile` — 更新学生资料
+- `POST /api/student/ai-chat` — AI智能问答
+- `GET /api/student/ai-quick-questions` — 获取快捷问题推荐
 
 ---
 
