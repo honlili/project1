@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学生校内双证管理系统 - 项目介绍</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #0f1419 0%, #1a1f2e 50%, #0d1117 100%);
+            min-height: 100vh;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        /* 幻灯片容器 */
+        .slide {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 标题样式 */
+        h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #00d2ff, #3a7bd5, #667eea);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 2rem;
+            color: #fff;
+            margin-bottom: 30px;
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(90deg, #1890ff, #69c0ff);
+            border-radius: 2px;
+        }
+
+        h3 {
+            font-size: 1.4rem;
+            color: #e6f7ff;
+            margin-bottom: 15px;
+        }
+
+        /* 封面页 */
+        .cover {
+            text-align: center;
+        }
+
+        .cover .subtitle {
+            font-size: 1.2rem;
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 40px;
+        }
+
+        .cover .tagline {
+            font-size: 1rem;
+            color: rgba(255,255,255,0.5);
+            margin-top: 60px;
+        }
+
+        .cover .logo {
+            font-size: 80px;
+            margin-bottom: 30px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* 目录页 */
+        .toc {
+            list-style: none;
+            text-align: left;
+        }
+
+        .toc li {
+            font-size: 1.2rem;
+            padding: 15px 30px;
+            margin: 10px 0;
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+            border-left: 4px solid #1890ff;
+            transition: all 0.3s ease;
+        }
+
+        .toc li:hover {
+            background: rgba(24,144,255,0.15);
+            transform: translateX(10px);
+        }
+
+        /* 功能特性网格 */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            background: linear-gradient(145deg, rgba(24,144,255,0.15), rgba(255,255,255,0.05));
+            border-color: rgba(24,144,255,0.3);
+        }
+
+        .feature-card .icon {
+            font-size: 40px;
+            margin-bottom: 15px;
+        }
+
+        .feature-card .title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+
+        .feature-card .desc {
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.6);
+            line-height: 1.6;
+        }
+
+        /* 技术栈 */
+        .tech-stack {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            max-width: 1000px;
+        }
+
+        .tech-item {
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .tech-item:hover {
+            background: rgba(24,144,255,0.15);
+            transform: scale(1.05);
+        }
+
+        .tech-item .name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1890ff;
+            margin-bottom: 5px;
+        }
+
+        .tech-item .desc {
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.5);
+        }
+
+        /* 界面展示 */
+        .ui-showcase {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+            max-width: 1200px;
+        }
+
+        .ui-card {
+            background: rgba(255,255,255,0.03);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .ui-card .header {
+            padding: 20px;
+            background: linear-gradient(90deg, rgba(24,144,255,0.2), transparent);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            font-weight: 600;
+        }
+
+        .ui-card .content {
+            padding: 30px;
+        }
+
+        .ui-card ul {
+            list-style: none;
+        }
+
+        .ui-card li {
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .ui-card li:last-child {
+            border-bottom: none;
+        }
+
+        .ui-card .check {
+            color: #52c41a;
+            font-size: 16px;
+        }
+
+        /* 数据统计 */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            max-width: 1000px;
+        }
+
+        .stat-card {
+            background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #1890ff, #69c0ff);
+        }
+
+        .stat-card .value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 5px;
+        }
+
+        .stat-card .label {
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.6);
+        }
+
+        /* 代码展示 */
+        .code-block {
+            background: #0d1117;
+            border-radius: 12px;
+            padding: 25px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9rem;
+            color: #e6edf3;
+            overflow-x: auto;
+            max-width: 900px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .code-block .comment {
+            color: #8b949e;
+        }
+
+        .code-block .keyword {
+            color: #ff7b72;
+        }
+
+        .code-block .string {
+            color: #a5d6ff;
+        }
+
+        /* 按钮 */
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #1890ff, #096dd9);
+            border-radius: 8px;
+            color: #fff;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(24,144,255,0.3);
+        }
+
+        /* 页脚 */
+        .footer {
+            text-align: center;
+            padding: 30px;
+            color: rgba(255,255,255,0.4);
+            font-size: 0.9rem;
+        }
+
+        .footer a {
+            color: #1890ff;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* 导航指示器 */
+        .nav-indicators {
+            position: fixed;
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 100;
+        }
+
+        .nav-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            margin: 10px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-dot:hover,
+        .nav-dot.active {
+            background: #1890ff;
+            transform: scale(1.3);
+        }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            h1 { font-size: 1.8rem; }
+            h2 { font-size: 1.5rem; }
+            .features-grid { grid-template-columns: 1fr; }
+            .tech-stack { grid-template-columns: repeat(2, 1fr); }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .ui-showcase { grid-template-columns: 1fr; }
+            .nav-indicators { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航指示器 -->
+    <div class="nav-indicators">
+        <div class="nav-dot active" onclick="scrollToSlide(0)"></div>
+        <div class="nav-dot" onclick="scrollToSlide(1)"></div>
+        <div class="nav-dot" onclick="scrollToSlide(2)"></div>
+        <div class="nav-dot" onclick="scrollToSlide(3)"></div>
+        <div class="nav-dot" onclick="scrollToSlide(4)"></div>
+        <div class="nav-dot" onclick="scrollToSlide(5)"></div>
+        <div class="nav-dot" onclick="scrollToSlide(6)"></div>
+        <div class="nav-dot" onclick="scrollToSlide(7)"></div>
+    </div>
+
+    <!-- 封面页 -->
+    <section class="slide cover" id="slide0">
+        <div class="logo">🎓</div>
+        <h1>学生校内双证管理系统</h1>
+        <p class="subtitle">Student Dual Certificate Management System</p>
+        <div style="display: flex; gap: 30px; margin-top: 30px;">
+            <span style="padding: 10px 25px; background: rgba(24,144,255,0.15); border-radius: 20px; border: 1px solid rgba(24,144,255,0.3);">React 18</span>
+            <span style="padding: 10px 25px; background: rgba(82,196,26,0.15); border-radius: 20px; border: 1px solid rgba(82,196,26,0.3);">Node.js</span>
+            <span style="padding: 10px 25px; background: rgba(250,173,20,0.15); border-radius: 20px; border: 1px solid rgba(250,173,20,0.3);">Ant Design</span>
+        </div>
+        <p class="tagline">版本 1.0.0 | 演示模式</p>
+    </section>
+
+    <!-- 目录页 -->
+    <section class="slide" id="slide1">
+        <h2>目录</h2>
+        <ul class="toc">
+            <li>📋 项目概述</li>
+            <li>✨ 功能特性</li>
+            <li>🛠️ 技术栈</li>
+            <li>🏗️ 系统架构</li>
+            <li>🖥️ 界面展示</li>
+            <li>📊 数据统计</li>
+            <li>🚀 快速开始</li>
+            <li>🎯 总结与展望</li>
+        </ul>
+    </section>
+
+    <!-- 项目概述 -->
+    <section class="slide" id="slide2">
+        <h2>项目概述</h2>
+        <div style="max-width: 1000px; text-align: center;">
+            <p style="font-size: 1.1rem; line-height: 1.8; color: rgba(255,255,255,0.8); margin-bottom: 30px;">
+                学生校内双证管理系统是一个完整的证书管理平台，旨在帮助学校高效管理学生证书的报名、审核和归档工作。
+                系统同时提供管理员端和学生端两个独立入口，实现证书全生命周期管理。
+            </p>
+            <div style="display: flex; justify-content: center; gap: 40px;">
+                <div style="text-align: center;">
+                    <div style="font-size: 40px; margin-bottom: 10px;">🏢</div>
+                    <div style="font-weight: 600; color: #1890ff;">管理员端</div>
+                    <div style="font-size: 0.9rem; color: rgba(255,255,255,0.6);">证书管理、审核审批</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 40px; margin-bottom: 10px;">👨‍🎓</div>
+                    <div style="font-weight: 600; color: #52c41a;">学生端</div>
+                    <div style="font-size: 0.9rem; color: rgba(255,255,255,0.6);">证书查询、报名考试</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 功能特性 -->
+    <section class="slide" id="slide3">
+        <h2>功能特性</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="icon">📜</div>
+                <div class="title">证书管理</div>
+                <div class="desc">支持人社、专业、校内三种证书类型的增删改查，标记必考证书</div>
+            </div>
+            <div class="feature-card">
+                <div class="icon">👨‍🎓</div>
+                <div class="title">学生管理</div>
+                <div class="desc">学生信息维护，支持Excel批量导入，自定义班级和学院</div>
+            </div>
+            <div class="feature-card">
+                <div class="icon">✅</div>
+                <div class="title">报名审核</div>
+                <div class="desc">AI智能预审 + 人工审核，自动判断成绩是否达标</div>
+            </div>
+            <div class="feature-card">
+                <div class="icon">📚</div>
+                <div class="title">成绩归档</div>
+                <div class="desc">按班级查看证书获取情况，支持附件上传</div>
+            </div>
+            <div class="feature-card">
+                <div class="icon">📖</div>
+                <div class="title">培训资料</div>
+                <div class="desc">发布培训信息和备考资料，支持分类筛选</div>
+            </div>
+            <div class="feature-card">
+                <div class="icon">🤖</div>
+                <div class="title">AI智能问答</div>
+                <div class="desc">学生端智能助手，解答报名流程、证书要求等问题</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 技术栈 -->
+    <section class="slide" id="slide4">
+        <h2>技术栈</h2>
+        <div class="tech-stack">
+            <div class="tech-item">
+                <div class="name">React 18</div>
+                <div class="desc">前端框架</div>
+            </div>
+            <div class="tech-item">
+                <div class="name">Ant Design 5</div>
+                <div class="desc">UI组件库</div>
+            </div>
+            <div class="tech-item">
+                <div class="name">Node.js</div>
+                <div class="desc">后端服务</div>
+            </div>
+            <div class="tech-item">
+                <div class="name">Express</div>
+                <div class="desc">Web框架</div>
+            </div>
+            <div class="tech-item">
+                <div class="name">MySQL</div>
+                <div class="desc">数据库</div>
+            </div>
+            <div class="tech-item">
+                <div class="name">JWT</div>
+                <div class="desc">认证授权</div>
+            </div>
+            <div class="tech-item">
+                <div class="name">Axios</div>
+                <div class="desc">HTTP请求</div>
+            </div>
+            <div class="tech-item">
+                <div class="name">React Router</div>
+                <div class="desc">路由管理</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 界面展示 -->
+    <section class="slide" id="slide5">
+        <h2>界面展示</h2>
+        <div class="ui-showcase">
+            <div class="ui-card">
+                <div class="header">👔 管理员端</div>
+                <div class="content">
+                    <ul>
+                        <li><span class="check">✓</span>仪表板 - 数据统计概览</li>
+                        <li><span class="check">✓</span>证书管理 - 证书类型配置</li>
+                        <li><span class="check">✓</span>学生管理 - 批量导入导出</li>
+                        <li><span class="check">✓</span>报名审核 - AI预审+人工审核</li>
+                        <li><span class="check">✓</span>成绩归档 - 班级证书统计</li>
+                        <li><span class="check">✓</span>培训资料 - 资料发布管理</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="ui-card">
+                <div class="header">👨‍🎓 学生端</div>
+                <div class="content">
+                    <ul>
+                        <li><span class="check">✓</span>个人中心 - 信息与统计</li>
+                        <li><span class="check">✓</span>我的证书 - 证书获取记录</li>
+                        <li><span class="check">✓</span>报名考试 - 在线报名</li>
+                        <li><span class="check">✓</span>培训资料 - 学习资源</li>
+                        <li><span class="check">✓</span>AI问答 - 智能助手</li>
+                        <li><span class="check">✓</span>个人设置 - 修改密码</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 数据统计 -->
+    <section class="slide" id="slide6">
+        <h2>数据统计（演示数据）</h2>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="value">12</div>
+                <div class="label">学生数量</div>
+            </div>
+            <div class="stat-card">
+                <div class="value">12</div>
+                <div class="label">证书类型</div>
+            </div>
+            <div class="stat-card">
+                <div class="value">42</div>
+                <div class="label">报名记录</div>
+            </div>
+            <div class="stat-card">
+                <div class="value">43%</div>
+                <div class="label">待审核率</div>
+            </div>
+        </div>
+        <div style="margin-top: 40px; max-width: 800px;">
+            <h3 style="text-align: center; margin-bottom: 20px;">报名审核状态分布</h3>
+            <div style="display: flex; justify-content: space-around;">
+                <div style="text-align: center;">
+                    <div style="width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, #52c41a, #73d13d); display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 700; margin-bottom: 10px;">18</div>
+                    <div style="color: rgba(255,255,255,0.7);">已通过</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, #faad14, #ffc53d); display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 700; margin-bottom: 10px;">17</div>
+                    <div style="color: rgba(255,255,255,0.7);">待审核</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, #ff4d4f, #ff7875); display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 700; margin-bottom: 10px;">7</div>
+                    <div style="color: rgba(255,255,255,0.7);">已驳回</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 快速开始 -->
+    <section class="slide" id="slide7">
+        <h2>快速开始</h2>
+        <div style="max-width: 800px; text-align: center;">
+            <div class="code-block">
+                <div><span class="comment">:: 方式一：双击启动（推荐）</span></div>
+                <div style="margin-top: 10px;">双击 <span class="string">start.bat</span></div>
+                <div style="margin-top: 15px;"><span class="comment">:: 方式二：命令行启动</span></div>
+                <div style="margin-top: 10px;"><span class="keyword">cd</span> backend</div>
+                <div><span class="keyword">npm</span> run demo</div>
+                <div style="margin-top: 10px;"><span class="keyword">cd</span> frontend</div>
+                <div><span class="keyword">npm</span> start</div>
+            </div>
+            <div style="margin-top: 30px; padding: 25px; background: rgba(24,144,255,0.1); border-radius: 12px; text-align: left;">
+                <div style="font-weight: 600; margin-bottom: 15px; color: #1890ff;">📌 登录账号</div>
+                <div>• 管理员：<span style="color: #52c41a;">admin</span> / <span style="color: #52c41a;">admin123</span></div>
+                <div>• 学生：<span style="color: #52c41a;">2023001001</span> / <span style="color: #52c41a;">123456</span></div>
+            </div>
+            <a href="http://localhost:3000" class="btn" target="_blank">启动应用</a>
+        </div>
+    </section>
+
+    <!-- 总结 -->
+    <section class="slide">
+        <h2>总结与展望</h2>
+        <div style="max-width: 900px; text-align: center;">
+            <div style="display: flex; justify-content: center; gap: 30px; margin-bottom: 40px;">
+                <div style="width: 120px; height: 120px; border-radius: 50%; background: linear-gradient(135deg, rgba(24,144,255,0.2), rgba(58,123,213,0.2)); display: flex; align-items: center; justify-content: center;">
+                    <span style="font-size: 48px;">🎯</span>
+                </div>
+            </div>
+            <h3 style="margin-bottom: 20px;">项目亮点</h3>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+                <div style="padding: 20px; background: rgba(255,255,255,0.05); border-radius: 10px;">
+                    <div style="font-size: 24px; margin-bottom: 10px;">✨</div>
+                    <div style="font-weight: 600;">AI智能审核</div>
+                    <div style="font-size: 0.9rem; color: rgba(255,255,255,0.6);">自动判断成绩是否达标</div>
+                </div>
+                <div style="padding: 20px; background: rgba(255,255,255,0.05); border-radius: 10px;">
+                    <div style="font-size: 24px; margin-bottom: 10px;">🤖</div>
+                    <div style="font-weight: 600;">智能问答助手</div>
+                    <div style="font-size: 0.9rem; color: rgba(255,255,255,0.6);">解答学生疑问</div>
+                </div>
+                <div style="padding: 20px; background: rgba(255,255,255,0.05); border-radius: 10px;">
+                    <div style="font-size: 24px; margin-bottom: 10px;">🚀</div>
+                    <div style="font-weight: 600;">一键启动</div>
+                    <div style="font-size: 0.9rem; color: rgba(255,255,255,0.6);">无需配置即可运行</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <p>学生校内双证管理系统 | <a href="https://github.com/honlili/project1" target="_blank">GitHub</a></p>
+        <p style="margin-top: 10px; font-size: 0.8rem;">© 2024 All Rights Reserved</p>
+    </footer>
+
+    <script>
+        function scrollToSlide(index) {
+            const slides = document.querySelectorAll('.slide');
+            if (slides[index]) {
+                slides[index].scrollIntoView({ behavior: 'smooth' });
+            }
+            // 更新导航指示器
+            document.querySelectorAll('.nav-dot').forEach((dot, i) => {
+                dot.classList.toggle('active', i === index);
+            });
+        }
+
+        // 监听滚动更新导航指示器
+        window.addEventListener('scroll', () => {
+            const slides = document.querySelectorAll('.slide');
+            const scrollPosition = window.scrollY + window.innerHeight / 2;
+            
+            slides.forEach((slide, index) => {
+                const offsetTop = slide.offsetTop;
+                const offsetHeight = slide.offsetHeight;
+                
+                if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
+                    document.querySelectorAll('.nav-dot').forEach((dot, i) => {
+                        dot.classList.toggle('active', i === index);
+                    });
+                }
+            });
+        });
+
+        // 键盘导航
+        document.addEventListener('keydown', (e) => {
+            const slides = document.querySelectorAll('.slide');
+            let currentIndex = 0;
+            
+            slides.forEach((slide, index) => {
+                const offsetTop = slide.offsetTop;
+                if (window.scrollY >= offsetTop - 100) {
+                    currentIndex = index;
+                }
+            });
+            
+            if (e.key === 'ArrowDown' && currentIndex < slides.length - 1) {
+                scrollToSlide(currentIndex + 1);
+            } else if (e.key === 'ArrowUp' && currentIndex > 0) {
+                scrollToSlide(currentIndex - 1);
+            }
+        });
+    </script>
+</body>
+</html>
