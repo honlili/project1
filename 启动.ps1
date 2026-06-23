@@ -1,4 +1,4 @@
-﻿# Double Cert Management System - PowerShell Launcher
+﻿﻿﻿﻿﻿﻿# Double Cert Management System - PowerShell Launcher
 # Usage: Right-click -> Run with PowerShell
 
 $ErrorActionPreference = "Continue"

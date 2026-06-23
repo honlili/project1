@@ -1,92 +1,106 @@
-/**
- * 学生端我的证书页面
- */
-import { Table, Tag, Card } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Table, Tag, Card, Spin, Empty } from 'antd';
+import { getStudentCertificates, getCurrentStudent } from '../services/authService';
+
+const typeColor = (t) => {
+    if (t === '人社') return 'blue';
+    if (t === '专业') return 'green';
+    if (t === '校内') return 'orange';
+    return 'default';
+};
+
+const statusColor = (s) => {
+    if (s === '已通过') return 'green';
+    if (s === '待审核') return 'gold';
+    if (s === '已驳回') return 'red';
+    return 'default';
+};
 
 const StudentCertificates = () => {
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
-    
-    // 模拟数据
-    const certificates = [
-        {
-            id: 1,
-            name: '全国计算机等级考试二级',
-            type: '专业',
-            issuer: '教育部考试中心',
-            issue_date: '2024-01-05',
-            status: '已获得',
-            score: 85
-        },
-        {
-            id: 2,
-            name: '软件设计师（中级）',
-            type: '人社',
-            issuer: '人力资源和社会保障部',
-            issue_date: '-',
-            status: '审核中',
-            score: 72
-        },
-        {
-            id: 3,
-            name: 'Python编程基础',
-            type: '校内',
-            issuer: '智能产业学院',
-            issue_date: '2023-12-20',
-            status: '已获得',
-            score: 90
-        }
-    ];
-    
-    const columns = [
-        { title: '证书名称', dataIndex: 'name', key: 'name' },
-        { 
-            title: '类型', 
-            dataIndex: 'type', 
-            key: 'type',
-            render: (type) => {
-                const color = {
-                    '人社': 'blue',
-                    '专业': 'green',
-                    '校内': 'orange'
-                }[type] || 'default';
-                return <Tag color={color}>{type}</Tag>;
+    const [loading, setLoading] = useState(true);
+    const [obtained, setObtained] = useState([]);
+    const [others, setOthers] = useState([]);
+    const [student, setStudent] = useState({});
+
+    const fetchData = async () => {
+        setLoading(true);
+        try {
+            const certRes = await getStudentCertificates();
+            if (certRes && certRes.success) {
+                setObtained(certRes.data.obtained || []);
+                setOthers(certRes.data.others || []);
             }
-        },
-        { title: '发证机构', dataIndex: 'issuer', key: 'issuer' },
-        { title: '发证日期', dataIndex: 'issue_date', key: 'issue_date' },
-        { title: '成绩', dataIndex: 'score', key: 'score' },
-        { 
-            title: '状态', 
-            dataIndex: 'status', 
-            key: 'status',
-            render: (status) => {
-                const color = {
-                    '已获得': 'green',
-                    '审核中': 'yellow',
-                    '未通过': 'red'
-                }[status] || 'default';
-                return <Tag color={color}>{status}</Tag>;
+            const stuRes = await getCurrentStudent();
+            if (stuRes && stuRes.success && stuRes.data) {
+                setStudent(stuRes.data);
             }
+        } finally {
+            setLoading(false);
         }
+    };
+
+    useEffect(() => {
+        fetchData();
+    }, []);
+
+    const obtainedColumns = [
+        { title: '证书名称', dataIndex: 'name', key: 'name', width: 280 },
+        { title: '类型', dataIndex: 'type', key: 'type', width: 100, render: (v) => <Tag color={typeColor(v)}>{v}</Tag> },
+        { title: '发证机构', dataIndex: 'issuing_authority', key: 'issuing_authority', width: 260 },
+        { title: '发证日期', dataIndex: 'issue_date', key: 'issue_date', width: 140 },
+        { title: '成绩', dataIndex: 'score', key: 'score', width: 100 },
+        { title: '状态', dataIndex: 'status', key: 'status', width: 100, render: (v) => <Tag color="green">{v}</Tag> }
     ];
-    
+
+    const othersColumns = [
+        { title: '证书名称', dataIndex: 'name', key: 'name', width: 280 },
+        { title: '类型', dataIndex: 'type', key: 'type', width: 100, render: (v) => <Tag color={typeColor(v)}>{v}</Tag> },
+        { title: '成绩', dataIndex: 'score', key: 'score', width: 100 },
+        { title: '状态', dataIndex: 'status', key: 'status', width: 100, render: (v) => <Tag color={statusColor(v)}>{v}</Tag> },
+        { title: '申请时间', dataIndex: 'apply_date', key: 'apply_date', width: 180 }
+    ];
+
     return (
-        <div>
-            <div className="page-header">
-                <h2 className="page-title">我的证书</h2>
-                <p style={{ margin: '8px 0 0 0', color: '#666' }}>
-                    学生：{user.name} ({user.username})
-                </p>
-            </div>
-            
-            <Card>
-                <Table
-                    dataSource={certificates}
-                    columns={columns}
-                    rowKey="id"
-                    pagination={false}
-                />
-            </Card>
+        <div style={{ padding: 16 }}>
+            <Spin spinning={loading} tip="加载中...">
+                <div className="page-header" style={{ marginBottom: 16 }}>
+                    <h2 className="page-title" style={{ margin: 0 }}>我的证书</h2>
+                    <p style={{ margin: '8px 0 0 0', color: '#666' }}>
+                        学生：{student?.name || '-'} ({student?.student_no || '-'})
+                    </p>
+                </div>
+
+                <Card
+                    title={<span>✅ 已获得（{obtained.length}）</span>}
+                    style={{ marginBottom: 16 }}
+                >
+                    {obtained.length === 0 ? (
+                        <Empty description="暂无已获得证书" />
+                    ) : (
+                        <Table
+                            dataSource={obtained}
+                            columns={obtainedColumns}
+                            rowKey={(r) => r.id || r.certificate_id}
+                            pagination={false}
+                            size="middle"
+                        />
+                    )}
+                </Card>
+
+                <Card title={<span>其他状态（{others.length}）</span>}>
+                    {others.length === 0 ? (
+                        <Empty description="暂无其他状态的报名记录" />
+                    ) : (
+                        <Table
+                            dataSource={others}
+                            columns={othersColumns}
+                            rowKey={(r) => r.id || r.certificate_id}
+                            pagination={false}
+                            size="middle"
+                        />
+                    )}
+                </Card>
+            </Spin>
         </div>
     );
 };

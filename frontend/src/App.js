@@ -22,22 +22,35 @@ import StudentDashboard from './pages/StudentDashboard';
 import StudentCertificates from './pages/StudentCertificates';
 import StudentApply from './pages/StudentApply';
 import StudentTraining from './pages/StudentTraining';
+import StudentSettings from './pages/StudentSettings';
+import StudentAiChat from './pages/StudentAiChat';
 
 // 布局组件
 import MainLayout from './components/MainLayout';
 import StudentLayout from './components/StudentLayout';
 
-// 路由守卫 - 检查登录状态
-const PrivateRoute = ({ children }) => {
+// 路由守卫 - 检查登录状态并按角色限制
+const PrivateRoute = ({ children, requireRole }) => {
     const token = localStorage.getItem('token');
     const user = localStorage.getItem('user');
-    
+    const role = localStorage.getItem('role');
+
     if (!token || !user) {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
+        localStorage.removeItem('role');
         return <Navigate to="/login" replace />;
     }
-    
+
+    if (requireRole === 'student' && role === 'admin') {
+        // 管理员走错页面，送回管理端
+        return <Navigate to="/" replace />;
+    }
+    if (requireRole === 'admin' && role === 'student') {
+        // 学生走错页面，送回学生端
+        return <Navigate to="/student" replace />;
+    }
+
     return children;
 };
 
@@ -53,7 +66,7 @@ function App() {
                     <Route
                         path="/"
                         element={
-                            <PrivateRoute>
+                            <PrivateRoute requireRole="admin">
                                 <MainLayout />
                             </PrivateRoute>
                         }
@@ -87,7 +100,7 @@ function App() {
                     <Route
                         path="/student"
                         element={
-                            <PrivateRoute>
+                            <PrivateRoute requireRole="student">
                                 <StudentLayout />
                             </PrivateRoute>
                         }
@@ -96,6 +109,8 @@ function App() {
                         <Route path="certificates" element={<StudentCertificates />} />
                         <Route path="apply" element={<StudentApply />} />
                         <Route path="training" element={<StudentTraining />} />
+                        <Route path="ai-chat" element={<StudentAiChat />} />
+                        <Route path="settings" element={<StudentSettings />} />
                     </Route>
 
                     {/* 默认重定向 */}

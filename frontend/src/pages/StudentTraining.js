@@ -1,127 +1,133 @@
-/**
- * 学生端培训资料页面
- */
-import { Card, List, Tag, Button } from 'antd';
-import { BookOutlined, FileTextOutlined, VideoCameraOutlined, DownloadOutlined } from '@ant-design/icons';
+import React, { useEffect, useState } from 'react';
+import { Card, List, Tag, Button, Select, Input, Empty, Spin, message } from 'antd';
+import { BookOutlined, FileTextOutlined, DownloadOutlined } from '@ant-design/icons';
+import { getStudentTraining } from '../services/authService';
+
+const { Search } = Input;
+
+const getTypeColor = (t) => {
+    if (t === '视频') return 'purple';
+    if (t === '文档') return 'blue';
+    return 'default';
+};
 
 const StudentTraining = () => {
-    // 模拟培训资料数据
-    const materials = [
-        {
-            id: 1,
-            title: 'Python编程入门教程',
-            type: '视频',
-            category: '编程基础',
-            description: '从零开始学习Python编程，适合零基础学员',
-            views: 1256,
-            upload_time: '2024-01-10'
-        },
-        {
-            id: 2,
-            title: '全国计算机等级考试二级备考指南',
-            type: '文档',
-            category: '考试辅导',
-            description: '详细的考试大纲解读和备考建议',
-            views: 892,
-            upload_time: '2024-01-08'
-        },
-        {
-            id: 3,
-            title: '软件设计师考试真题解析',
-            type: '文档',
-            category: '考试辅导',
-            description: '历年真题详解，帮助考生熟悉考试形式',
-            views: 654,
-            upload_time: '2024-01-05'
-        },
-        {
-            id: 4,
-            title: '数据库基础教程',
-            type: '视频',
-            category: '编程基础',
-            description: 'SQL语言入门到精通，掌握数据库操作',
-            views: 987,
-            upload_time: '2024-01-03'
-        },
-        {
-            id: 5,
-            title: 'Web前端开发实战',
-            type: '视频',
-            category: '编程基础',
-            description: 'HTML、CSS、JavaScript实战项目教学',
-            views: 1123,
-            upload_time: '2023-12-28'
-        },
-        {
-            id: 6,
-            title: '证书考试常见问题解答',
-            type: '文档',
-            category: '考试辅导',
-            description: '考生常见问题汇总及解答',
-            views: 445,
-            upload_time: '2023-12-25'
+    const [loading, setLoading] = useState(true);
+    const [all, setAll] = useState([]);
+    const [category, setCategory] = useState('全部');
+    const [keyword, setKeyword] = useState('');
+
+    const fetchData = async () => {
+        setLoading(true);
+        try {
+            const res = await getStudentTraining({ category, keyword });
+            if (res && res.success) {
+                setAll(res.data || []);
+            }
+        } finally {
+            setLoading(false);
         }
-    ];
-    
-    const getTypeIcon = (type) => {
-        if (type === '视频') return <VideoCameraOutlined />;
-        if (type === '文档') return <FileTextOutlined />;
-        return <BookOutlined />;
     };
-    
-    const getTypeColor = (type) => {
-        if (type === '视频') return 'purple';
-        if (type === '文档') return 'blue';
-        return 'default';
+
+    useEffect(() => {
+        fetchData();
+    }, []);
+
+    // 获取分类列表用于筛选下拉
+    const categories = Array.from(new Set([
+        '全部',
+        ...(all.map((m) => m.category || m.material_type || '其他'))
+    ]));
+
+    // 显示数据（前端再过滤，容错）
+    const filtered = all.filter((m) => {
+        const matchCategory =
+            category === '全部' ||
+            m.category === category ||
+            m.material_type === category;
+        const matchKeyword =
+            !keyword || (m.title || '').includes(keyword);
+        return matchCategory && matchKeyword;
+    });
+
+    const onDownload = (item) => {
+        // 演示模式：模拟下载提示
+        message.success(`已开始下载《${item.title}》`);
     };
-    
-    const getCategoryColor = (category) => {
-        if (category === '编程基础') return 'green';
-        if (category === '考试辅导') return 'orange';
-        return 'default';
-    };
-    
+
     return (
-        <div>
-            <div className="page-header">
-                <h2 className="page-title">培训资料</h2>
-                <p style={{ margin: '8px 0 0 0', color: '#666' }}>
-                    提供各类证书考试培训资料和学习资源
-                </p>
-            </div>
-            
-            <List
-                grid={{ gutter: 16, column: 2 }}
-                dataSource={materials}
-                renderItem={(item) => (
-                    <List.Item key={item.id}>
-                        <Card 
-                            hoverable
-                            style={{ height: '100%' }}
-                            actions={[
-                                <Button type="link" icon={<DownloadOutlined />}>下载</Button>
-                            ]}
-                        >
-                            <div style={{ marginBottom: '12px' }}>
-                                <Tag color={getTypeColor(item.type)} style={{ marginRight: '8px' }}>
-                                    {getTypeIcon(item.type)} {item.type}
-                                </Tag>
-                                <Tag color={getCategoryColor(item.category)}>
-                                    {item.category}
-                                </Tag>
-                            </div>
-                            <h3 style={{ marginBottom: '8px', fontSize: '16px' }}>{item.title}</h3>
-                            <p style={{ marginBottom: '12px', color: '#666', fontSize: '14px' }}>
-                                {item.description}
-                            </p>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', color: '#999', fontSize: '12px' }}>
-                                <span>浏览量：{item.views}</span>
-                                <span>{item.upload_time}</span>
-                            </div>
-                        </Card>
-                    </List.Item>
+        <div style={{ padding: 16 }}>
+            <Spin spinning={loading} tip="加载中...">
+                <div className="page-header" style={{ marginBottom: 16 }}>
+                    <h2 className="page-title" style={{ margin: 0 }}>培训资料</h2>
+                    <p style={{ margin: '8px 0 0 0', color: '#666' }}>
+                        各类证书考试培训资料和学习资源
+                    </p>
+                </div>
+
+                <Card style={{ marginBottom: 16 }}>
+                    <div style={{ display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
+                        <span>分类：</span>
+                        <Select
+                            style={{ width: 160 }}
+                            value={category}
+                            onChange={(v) => setCategory(v)}
+                            options={categories.map((c) => ({ value: c, label: c }))}
+                        />
+                        <Search
+                            placeholder="搜索资料标题"
+                            allowClear
+                            style={{ width: 280 }}
+                            onSearch={(v) => setKeyword(v)}
+                            onChange={(e) => {
+                                if (!e.target.value) setKeyword('');
+                            }}
+                        />
+                        <Button type="primary" onClick={() => fetchData()}>刷新</Button>
+                        <span style={{ color: '#999', marginLeft: 'auto' }}>共 {filtered.length} 条</span>
+                    </div>
+                </Card>
+
+                {filtered.length === 0 ? (
+                    <Empty description="暂无匹配的资料" />
+                ) : (
+                    <List
+                        grid={{ gutter: 16, xs: 1, sm: 1, md: 2, lg: 2, xl: 3, xxl: 4 }}
+                        dataSource={filtered}
+                        renderItem={(item) => (
+                            <List.Item>
+                                <Card
+                                    hoverable
+                                    title={<span>{item.title}</span>}
+                                    extra={
+                                        <Tag color={getTypeColor(item.material_type || item.type)}>
+                                            {item.material_type || item.type || '资料'}
+                                        </Tag>
+                                    }
+                                    actions={[
+                                        <Button
+                                            type="link"
+                                            icon={<DownloadOutlined />}
+                                            key="download"
+                                            onClick={() => onDownload(item)}
+                                        >
+                                            下载
+                                        </Button>
+                                    ]}
+                                >
+                                    <p style={{ minHeight: 44, color: '#666' }}>
+                                        {item.description || `${item.title} 参考学习资料`}
+                                    </p>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', color: '#999', fontSize: 12 }}>
+                                        <span>浏览量：{item.views || item.view_count || 0}</span>
+                                        <span>{item.upload_time || item.apply_date || '-'}</span>
+                                    </div>
+                                </Card>
+                            </List.Item>
+                        )}
+                    />
                 )}
-            />
+            </Spin>
         </div>
     );
 };

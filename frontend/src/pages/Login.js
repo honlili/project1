@@ -5,7 +5,7 @@ import React, { useState } from 'react';
 import { Form, Input, Button, message, Card, Checkbox, Tabs } from 'antd';
 import { UserOutlined, LockOutlined, EyeOutlined, EyeInvisibleOutlined, BookOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
-import { login } from '../services/authService';
+import { login, studentLogin } from '../services/authService';
 
 const { TabPane } = Tabs;
 
@@ -70,31 +70,26 @@ const Login = () => {
         }
     };
 
-    // 学生登录
+    // 学生登录（学号 + 密码）
     const handleStudentLogin = async (values) => {
         setLoading(true);
         try {
-            const student = mockStudents.find(s => s.student_no === values.student_no);
-            
-            if (student) {
-                const token = 'student-token-' + Date.now();
-                localStorage.setItem('token', token);
-                localStorage.setItem('user', JSON.stringify({
-                    id: student.student_no,
-                    username: student.student_no,
-                    name: student.name,
-                    role: 'student',
-                    college: student.college,
-                    class_name: student.class_name
-                }));
+            const res = await studentLogin({
+                student_no: values.student_no,
+                password: values.password
+            });
+
+            if (res.success) {
+                localStorage.setItem('token', res.data.token);
+                localStorage.setItem('user', JSON.stringify(res.data.user));
                 localStorage.setItem('role', 'student');
-                message.success('登录成功');
+                message.success(`欢迎回来，${res.data.user.name}`);
                 navigate('/student');
             } else {
-                message.error('学号不存在，请检查输入');
+                message.error(res.message || '学号或密码错误');
             }
         } catch (error) {
-            message.error(error.message || '登录失败');
+            message.error(error.message || '登录失败，请检查后端服务是否启动');
         } finally {
             setLoading(false);
         }
@@ -246,6 +241,20 @@ const Login = () => {
                                             className="login-input"
                                         />
                                     </Form.Item>
+
+                                    <Form.Item
+                                        name="password"
+                                        rules={[
+                                            { required: true, message: '请输入密码' },
+                                            { min: 6, message: '密码至少6位' }
+                                        ]}
+                                    >
+                                        <Input.Password 
+                                            prefix={<LockOutlined className="input-icon" />} 
+                                            placeholder="请输入密码"
+                                            className="login-input"
+                                        />
+                                    </Form.Item>
                                     
                                     <Form.Item>
                                         <Button 
@@ -262,10 +271,10 @@ const Login = () => {
                                 
                                 <div className="login-footer">
                                     <div className="demo-info student-demo">
-                                        <span className="demo-label">演示学号：</span>
+                                        <span className="demo-label">演示账号：</span>
                                         <span className="demo-value">2023001001</span>
-                                        <span className="demo-label" style={{ marginLeft: '10px' }}>或</span>
-                                        <span className="demo-value">2023001002</span>
+                                        <span className="demo-separator">/</span>
+                                        <span className="demo-value">123456</span>
                                     </div>
                                 </div>
                             </TabPane>

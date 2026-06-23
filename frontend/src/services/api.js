@@ -1,8 +1,9 @@
 import axios from 'axios';
 
+const API_BASE = 'http://localhost:5000';
 const api = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || 'http://localhost:5000',
-  timeout: 3000,
+  baseURL: API_BASE,
+  timeout: 10000,
 });
 
 // 请求拦截器：自动添加 token
